@@ -94,25 +94,16 @@
 
 /* LEDs */
 
-/* The Blue/Red pills have a different pinout to the Black pill,
- * which includes the board's user LED.
- */
-
-#ifdef CONFIG_STM32F103MINIMUM_BLACKPILL
-#  define GPIO_LED1         (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
-                            GPIO_OUTPUT_CLEAR|GPIO_PORTB|GPIO_PIN12)
-#else
-#  define GPIO_LED1         (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
-                             GPIO_OUTPUT_CLEAR|GPIO_PORTC|GPIO_PIN13)
-#endif
+#define GPIO_LED1         (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
+                           GPIO_OUTPUT_CLEAR|GPIO_PORTB|GPIO_PIN1)
 
 /* BUTTONs */
 
-#define GPIO_BTN_USER1    (GPIO_INPUT|GPIO_CNF_INFLOAT|GPIO_MODE_INPUT|\
-                           GPIO_EXTI|GPIO_PORTA|GPIO_PIN0)
+#define GPIO_BTN_USER1    (GPIO_INPUT|GPIO_CNF_INPULLUP|GPIO_MODE_INPUT|\
+                           GPIO_EXTI|GPIO_PORTB|GPIO_PIN15)
 
-#define GPIO_BTN_USER2    (GPIO_INPUT|GPIO_CNF_INFLOAT|GPIO_MODE_INPUT|\
-                           GPIO_EXTI|GPIO_PORTA|GPIO_PIN1)
+#define GPIO_BTN_USER2    (GPIO_INPUT|GPIO_CNF_INPULLUP|GPIO_MODE_INPUT|\
+                           GPIO_EXTI|GPIO_PORTB|GPIO_PIN14)
 
 #define MIN_IRQBUTTON     BUTTON_USER1
 #define MAX_IRQBUTTON     BUTTON_USER2
