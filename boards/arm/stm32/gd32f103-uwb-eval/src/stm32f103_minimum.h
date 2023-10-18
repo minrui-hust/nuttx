@@ -109,86 +109,28 @@
 #define MAX_IRQBUTTON     BUTTON_USER2
 #define NUM_IRQBUTTONS    (BUTTON_USER1 - BUTTON_USER2 + 1)
 
-/* SPI chip selects */
+/* DW1000 chip select reset and irq */
 
-#define FLASH_SPI1_CS     (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
+#define GPIO_DW1000_CS    (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
                            GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN4)
 
-#define GPIO_CS_MFRC522   (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
-                           GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN4)
+#define GPIO_DW1000_RST   (GPIO_PORTA|GPIO_PIN2)
 
-#define STM32_LCD_CS      (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
-                           GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN4)
+#define GPIO_DW1000_IRQ   (GPIO_INPUT|GPIO_CNF_INPULLDWN|GPIO_PORTA|GPIO_PIN3)
 
-#define GPIO_MAX6675_CS   (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
-                           GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN4)
-
-#define GPIO_MCP2515_CS   (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
-                           GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN4)
-
-#define GPIO_NRF24L01_CS  (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
-                           GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN4)
-
-#define GPIO_SDCARD_CS    (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
-                           GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN4)
-
-#define STM32_LCD_RST     (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
-                           GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN3)
-
-#define STM32_LCD_RS      (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
-                           GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN2)
-
-#define STM32_LCD_CD      (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
-                           GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN2)
-
-/* PWM Configuration */
-
-#define STM32F103MINIMUM_PWMTIMER   3
-#define STM32F103MINIMUM_PWMCHANNEL 3
-
-/* LM-75 Temperature Sensor: PA.0 */
-
-#define GPIO_LM75_OSINT (GPIO_INPUT|GPIO_CNF_INFLOAT|GPIO_PORTA|GPIO_PIN0)
-
-/* nRF24 Configuration */
-
-/* MCP2515 IRQ line: PB.0 */
-
-#define GPIO_MCP2515_IRQ (GPIO_INPUT|GPIO_CNF_INFLOAT|GPIO_PORTB|GPIO_PIN0)
-
-/* USB Soft Connect Pullup: PC.13 */
-
-#define GPIO_USB_PULLUP   (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
-                           GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN12)
+#define DW1000_SPI_ID 1
 
 /* GPIO pins used by the GPIO Subsystem */
 
-#define BOARD_NGPIOIN     1 /* Amount of GPIO Input pins */
-#define BOARD_NGPIOOUT    1 /* Amount of GPIO Output pins */
-#define BOARD_NGPIOINT    1 /* Amount of GPIO Input w/ Interruption pins */
+#define BOARD_NGPIOIN     0 /* Amount of GPIO Input pins */
+#define BOARD_NGPIOOUT    0 /* Amount of GPIO Output pins */
+#define BOARD_NGPIOINT    0 /* Amount of GPIO Input w/ Interruption pins */
 
 #define GPIO_IN1          (GPIO_INPUT|GPIO_CNF_INFLOAT|GPIO_PORTA|GPIO_PIN0)
 #define GPIO_OUT1         (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz|\
                            GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN1)
 
 #define GPIO_INT1         (GPIO_INPUT|GPIO_CNF_INFLOAT|GPIO_PORTA|GPIO_PIN2)
-
-/* WS2812 LEDs */
-
-#define WS2812_NLEDS 2
-#define WS2812_SPI 1
-
-/* Sensor */
-
-#define BOARD_HYT271_NBUS      2 /* Bus number of connected HYT271 */
-
-#define BOARD_HYT271_POWOUT    (GPIO_OUTPUT|GPIO_CNF_OUTPP|GPIO_MODE_50MHz| \
-                                GPIO_OUTPUT_SET|GPIO_PORTA|GPIO_PIN0)
-#define BOARD_HYT271_POWIN     (GPIO_INPUT|GPIO_CNF_INFLOAT|GPIO_PORTA| \
-                                GPIO_PIN1)
-
-#define BOARD_DS18B20_NBUS     2 /* Bus number of connected DS18B20 */
-#define BOARD_DS18B20_NSLAVES  2 /* Number of expected DS18B20 slaves */
 
 /****************************************************************************
  * Public Function Prototypes
@@ -250,6 +192,18 @@ int stm32_adc_setup(void);
  ****************************************************************************/
 
 void stm32_spidev_initialize(void);
+
+/****************************************************************************
+ * Name: stm32_dw1000_initialize
+ *
+ * Description:
+ *   Initializes dw1000 uwb phy chip
+ *
+ ****************************************************************************/
+
+#ifdef CONFIG_IEEE802154_DW1000
+int stm32_dw1000_initialize(void);
+#endif
 
 /****************************************************************************
  * Name: stm32_mmcsd_initialize

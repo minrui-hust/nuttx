@@ -335,7 +335,7 @@ int stm32_gpiosetevent(uint32_t pinset, bool risingedge, bool fallingedge,
         }
     }
 
-  /* Configure GPIO, enable EXTI line enabled if event or interrupt is
+  /* Configure GPIO, enable EXTI line if event or interrupt is
    * enabled.
    */
 

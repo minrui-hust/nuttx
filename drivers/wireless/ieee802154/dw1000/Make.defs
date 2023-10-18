@@ -1,5 +1,5 @@
 ############################################################################
-# wireless/Makefile
+# drivers/wireless/ieee802154/xbee/Make.defs
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -18,51 +18,20 @@
 #
 ############################################################################
 
-include $(TOPDIR)/Make.defs
+ifeq ($(CONFIG_IEEE802154_DW1000),y)
 
-# Add IEEE 802.15.4 files to the build
+# Include officeal dw1000 driver
 
-include bluetooth/Make.defs
-include ieee802154/Make.defs
-include pktradio/Make.defs
-include uwb/Make.defs
+include wireless/ieee802154/dw1000/decadriver/Make.defs
 
-AOBJS = $(ASRCS:.S=$(OBJEXT))
-COBJS = $(CSRCS:.c=$(OBJEXT))
+# Include dw1000 files into the build
 
-SRCS = $(ASRCS) $(CSRCS)
-OBJS = $(AOBJS) $(COBJS)
+CSRCS += dw1000.c dw1000_phy.c dw1000_interrupt.c port.c 
 
-BIN = libwireless$(LIBEXT)
+# Include dw1000 build support
 
-all: $(BIN)
-.PHONY: depend clean distclean
+DEPPATH += --dep-path wireless$(DELIM)ieee802154$(DELIM)dw1000
+VPATH += :wireless$(DELIM)ieee802154$(DELIM)dw1000
+CFLAGS += ${INCDIR_PREFIX}$(TOPDIR)$(DELIM)drivers$(DELIM)wireless$(DELIM)ieee802154$(DELIM)dw1000
 
-$(AOBJS): %$(OBJEXT): %.S
-	$(call ASSEMBLE, $<, $@)
-
-$(COBJS): %$(OBJEXT): %.c
-	$(call COMPILE, $<, $@)
-
-$(BIN): $(OBJS)
-	$(call ARCHIVE, $@, $(OBJS))
-
-makedepfile: $(CSRCS:.c=.ddc) $(ASRCS:.S=.dds)
-	$(call CATFILE, Make.dep, $^)
-	$(call DELFILE, $^)
-
-.depend: Makefile $(SRCS) $(TOPDIR)$(DELIM).config
-	$(Q) $(MAKE) makedepfile
-	$(Q) touch $@
-
-depend: .depend
-
-clean:
-	$(call DELFILE, $(BIN))
-	$(call CLEAN)
-
-distclean: clean
-	$(call DELFILE, Make.dep)
-	$(call DELFILE, .depend)
-
--include Make.dep
+endif # CONFIG_IEEE802154_DW1000

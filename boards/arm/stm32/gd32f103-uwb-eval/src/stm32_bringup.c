@@ -205,6 +205,14 @@ int stm32_bringup(void)
 #endif
   int ret = OK;
 
+#ifdef CONFIG_IEEE802154_DW1000
+  ret = stm32_dw1000_initialize();
+  if(ret<0){
+    syslog(LOG_ERR, "Failed to initialize dw1000: %d\n", ret);
+    return ret;
+  }
+#endif
+
 #ifdef CONFIG_DEV_GPIO
   ret = stm32_gpio_initialize();
   if (ret < 0)

@@ -37,6 +37,10 @@ else()
   list(APPEND SRCS stm32_userleds.c)
 endif()
 
+if(CONFIG_IEEE802154_DW1000)
+  list(APPEND SRCS stm32_dw1000.c)
+endif()
+
 if(CONFIG_ADC)
   list(APPEND SRCS stm32_adc.c)
 endif()

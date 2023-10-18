@@ -1260,7 +1260,7 @@ int mac802154netdev_register(MACHANDLE mac)
   dev->d_addmac       = macnet_addmac;     /* Add multicast MAC address */
   dev->d_rmmac        = macnet_rmmac;      /* Remove multicast MAC address */
 #endif
- #ifdef CONFIG_NETDEV_IOCTL
+#ifdef CONFIG_NETDEV_IOCTL
   dev->d_ioctl        = macnet_ioctl;      /* Handle network IOCTL commands */
 #endif
   dev->d_private      = priv;              /* Used to recover private state from dev */

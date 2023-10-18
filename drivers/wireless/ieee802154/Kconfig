@@ -30,4 +30,12 @@ config IEEE802154_XBEE
 
 source "drivers/wireless/ieee802154/xbee/Kconfig"
 
+config IEEE802154_DW1000
+	bool "Qorvo dw1000 IEEE 802.15.4 transceiver"
+	default n
+	---help---
+		This selection enables support for the Qorvo dw1000.
+
+source "drivers/wireless/ieee802154/dw1000/Kconfig"
+
 endif # DRIVERS_IEEE802154

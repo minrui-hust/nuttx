@@ -1,5 +1,5 @@
 ############################################################################
-# wireless/Makefile
+# wireless/ieee802154/Make.defs
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -18,51 +18,14 @@
 #
 ############################################################################
 
-include $(TOPDIR)/Make.defs
+ifeq ($(CONFIG_WIRELESS_UWB),y)
 
-# Add IEEE 802.15.4 files to the build
+# Include IEEE 802.15.4 support
 
-include bluetooth/Make.defs
-include ieee802154/Make.defs
-include pktradio/Make.defs
-include uwb/Make.defs
+CSRCS += uwb.c uwb_netdev.c uwb_phy_device.c
 
-AOBJS = $(ASRCS:.S=$(OBJEXT))
-COBJS = $(CSRCS:.c=$(OBJEXT))
+DEPPATH += --dep-path uwb
+VPATH += :uwb
+CFLAGS += ${INCDIR_PREFIX}$(TOPDIR)$(DELIM)wireless$(DELIM)uwb
 
-SRCS = $(ASRCS) $(CSRCS)
-OBJS = $(AOBJS) $(COBJS)
-
-BIN = libwireless$(LIBEXT)
-
-all: $(BIN)
-.PHONY: depend clean distclean
-
-$(AOBJS): %$(OBJEXT): %.S
-	$(call ASSEMBLE, $<, $@)
-
-$(COBJS): %$(OBJEXT): %.c
-	$(call COMPILE, $<, $@)
-
-$(BIN): $(OBJS)
-	$(call ARCHIVE, $@, $(OBJS))
-
-makedepfile: $(CSRCS:.c=.ddc) $(ASRCS:.S=.dds)
-	$(call CATFILE, Make.dep, $^)
-	$(call DELFILE, $^)
-
-.depend: Makefile $(SRCS) $(TOPDIR)$(DELIM).config
-	$(Q) $(MAKE) makedepfile
-	$(Q) touch $@
-
-depend: .depend
-
-clean:
-	$(call DELFILE, $(BIN))
-	$(call CLEAN)
-
-distclean: clean
-	$(call DELFILE, Make.dep)
-	$(call DELFILE, .depend)
-
--include Make.dep
+endif # CONFIG_WIRELESS_UWB

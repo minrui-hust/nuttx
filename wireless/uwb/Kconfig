@@ -1,0 +1,16 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+menuconfig WIRELESS_UWB
+	bool "IEEE 802.15.4 UWB Support"
+	default n
+	select MM_IOB
+	depends on WIRELESS
+	---help---
+		Enables 802.15.4 UWB
+
+if WIRELESS_UWB
+
+endif # WIRELESS_UWB

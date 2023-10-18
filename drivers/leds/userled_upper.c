@@ -300,7 +300,7 @@ static ssize_t userled_write(FAR struct file *filep, FAR const char *buffer,
   DEBUGASSERT(lower && lower->ll_setall);
   lower->ll_setall(lower, ledset);
 
-  nxmutex_unlock(&priv->lu_lock);
+   nxmutex_unlock(&priv->lu_lock);
   return (ssize_t)sizeof(userled_set_t);
 }
 

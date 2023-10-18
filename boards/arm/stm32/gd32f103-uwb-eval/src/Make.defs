@@ -39,6 +39,10 @@ else
   CSRCS += stm32_userleds.c
 endif
 
+ifeq ($(CONFIG_IEEE802154_DW1000),y)
+  CSRCS += stm32_dw1000.c
+endif
+
 ifeq ($(CONFIG_ADC),y)
 CSRCS +=  stm32_adc.c
 endif

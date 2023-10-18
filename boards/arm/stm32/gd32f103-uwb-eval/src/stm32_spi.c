@@ -24,12 +24,12 @@
 
 #include <nuttx/config.h>
 
-#include <stdint.h>
-#include <stdbool.h>
 #include <debug.h>
+#include <stdbool.h>
+#include <stdint.h>
 
-#include <nuttx/spi/spi.h>
 #include <arch/board/board.h>
+#include <nuttx/spi/spi.h>
 
 #include "arm_internal.h"
 #include "chip.h"
@@ -51,48 +51,15 @@
  *
  ****************************************************************************/
 
-void stm32_spidev_initialize(void)
-{
+void stm32_spidev_initialize(void) {
   /* NOTE: Clocking for SPI1 and/or SPI2 was already provided in stm32_rcc.c.
    *       Configurations of SPI pins is performed in stm32_spi.c.
    *       Here, we only initialize chip select pins unique to the board
    *       architecture.
    */
 
-#ifdef CONFIG_MTD_W25
-  stm32_configgpio(FLASH_SPI1_CS);      /* FLASH chip select */
-#endif
-
-#ifdef CONFIG_CAN_MCP2515
-  stm32_configgpio(GPIO_MCP2515_CS);    /* MCP2515 chip select */
-#endif
-
-#ifdef CONFIG_CL_MFRC522
-  stm32_configgpio(GPIO_CS_MFRC522);    /* MFRC522 chip select */
-#endif
-
-#if defined(CONFIG_SENSORS_MAX6675)
-  stm32_configgpio(GPIO_MAX6675_CS);    /* MAX6675 chip select */
-#endif
-
-#ifdef CONFIG_LCD_MAX7219
-  stm32_configgpio(STM32_LCD_CS);       /* MAX7219 chip select */
-#endif
-
-#ifdef CONFIG_LCD_ST7567
-  stm32_configgpio(STM32_LCD_CS);       /* ST7567 chip select */
-#endif
-
-#ifdef CONFIG_LCD_PCD8544
-  stm32_configgpio(STM32_LCD_CS);       /* ST7567 chip select */
-#endif
-
-#ifdef CONFIG_WL_NRF24L01
-  stm32_configgpio(GPIO_NRF24L01_CS);         /* nRF24L01 chip select */
-#endif
-
-#ifdef CONFIG_MMCSD_SPI
-  stm32_configgpio(GPIO_SDCARD_CS);           /* SD/MMC Card chip select */
+#ifdef CONFIG_IEEE802154_DW1000 /* DW1000 chip select */
+  stm32_configgpio(GPIO_DW1000_CS);
 #endif
 }
 
@@ -123,101 +90,21 @@ void stm32_spidev_initialize(void)
  ****************************************************************************/
 
 #ifdef CONFIG_STM32_SPI1
-void stm32_spi1select(struct spi_dev_s *dev, uint32_t devid,
-                      bool selected)
-{
-#if defined(CONFIG_CAN_MCP2515)
-  if (devid == SPIDEV_CANBUS(0))
-    {
-      stm32_gpiowrite(GPIO_MCP2515_CS, !selected);
-    }
-#endif
+void stm32_spi1select(struct spi_dev_s *dev, uint32_t devid, bool selected) {
 
-#if defined(CONFIG_CL_MFRC522)
-  if (devid == SPIDEV_CONTACTLESS(0))
-    {
-      stm32_gpiowrite(GPIO_CS_MFRC522, !selected);
-    }
-#endif
-
-#if defined(CONFIG_SENSORS_MAX6675)
-  if (devid == SPIDEV_TEMPERATURE(0))
-    {
-      stm32_gpiowrite(GPIO_MAX6675_CS, !selected);
-    }
-#endif
-
-#ifdef CONFIG_LCD_MAX7219
-  if (devid == SPIDEV_DISPLAY(0))
-    {
-      stm32_gpiowrite(STM32_LCD_CS, !selected);
-    }
-#endif
-
-#ifdef CONFIG_LCD_PCD8544
-  if (devid == SPIDEV_DISPLAY(0))
-    {
-      stm32_gpiowrite(STM32_LCD_CS, !selected);
-    }
-#endif
-
-#ifdef CONFIG_LCD_ST7567
-  if (devid == SPIDEV_DISPLAY(0))
-    {
-      stm32_gpiowrite(STM32_LCD_CS, !selected);
-    }
-#endif
-
-#ifdef CONFIG_WL_NRF24L01
-  if (devid == SPIDEV_WIRELESS(0))
-    {
-      stm32_gpiowrite(GPIO_NRF24L01_CS, !selected);
-    }
-#endif
-
-#ifdef CONFIG_MMCSD_SPI
-  if (devid == SPIDEV_MMCSD(0))
-    {
-      stm32_gpiowrite(GPIO_SDCARD_CS, !selected);
-    }
-#endif
-
-#ifdef CONFIG_MTD_W25
-  stm32_gpiowrite(FLASH_SPI1_CS, !selected);
+#ifdef CONFIG_IEEE802154_DW1000
+  stm32_gpiowrite(GPIO_DW1000_CS, !selected);
 #endif
 }
 
-uint8_t stm32_spi1status(struct spi_dev_s *dev, uint32_t devid)
-{
+uint8_t stm32_spi1status(struct spi_dev_s *dev, uint32_t devid) {
   uint8_t status = 0;
 
-#ifdef CONFIG_WL_NRF24L01
-  if (devid == SPIDEV_WIRELESS(0))
-    {
-       status |= SPI_STATUS_PRESENT;
-    }
-#endif
-
-#ifdef CONFIG_MMCSD_SPI
-  if (devid == SPIDEV_MMCSD(0))
-    {
-       status |= SPI_STATUS_PRESENT;
-    }
+#ifdef CONFIG_IEEE802154_DW1000
+  status |= SPI_STATUS_PRESENT;
 #endif
 
   return status;
-}
-#endif
-
-#ifdef CONFIG_STM32_SPI2
-void stm32_spi2select(struct spi_dev_s *dev, uint32_t devid,
-                      bool selected)
-{
-}
-
-uint8_t stm32_spi2status(struct spi_dev_s *dev, uint32_t devid)
-{
-  return 0;
 }
 #endif
 
@@ -246,33 +133,10 @@ uint8_t stm32_spi2status(struct spi_dev_s *dev, uint32_t devid)
 
 #ifdef CONFIG_SPI_CMDDATA
 #ifdef CONFIG_STM32_SPI1
-int stm32_spi1cmddata(struct spi_dev_s *dev, uint32_t devid,
-                      bool cmd)
-{
-#ifdef CONFIG_LCD_ST7567
-  if (devid == SPIDEV_DISPLAY(0))
-    {
-      /*  This is the Data/Command control pad which determines whether the
-       *  data bits are data or a command.
-       */
+int stm32_spi1cmddata(struct spi_dev_s *dev, uint32_t devid, bool cmd) {
 
-      stm32_gpiowrite(STM32_LCD_RS, !cmd);
-
-      return OK;
-    }
-#endif
-
-#ifdef CONFIG_LCD_PCD8544
-  if (devid == SPIDEV_DISPLAY(0))
-    {
-      /*  This is the Data/Command control pad which determines whether the
-       *  data bits are data or a command.
-       */
-
-      stm32_gpiowrite(STM32_LCD_CD, !cmd);
-
-      return OK;
-    }
+#ifdef CONFIG_IEEE802154_DW1000
+  return OK;
 #endif
 
   return -ENODEV;

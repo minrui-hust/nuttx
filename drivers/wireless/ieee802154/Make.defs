@@ -29,6 +29,7 @@ ifeq ($(CONFIG_DRIVERS_IEEE802154),y)
 include wireless/ieee802154/mrf24j40/Make.defs
 include wireless/ieee802154/at86rf23x/Make.defs
 include wireless/ieee802154/xbee/Make.defs
+include wireless/ieee802154/dw1000/Make.defs
 
 # Include common IEEE 802.15.4 build support
 
